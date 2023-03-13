@@ -2,12 +2,22 @@ const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
 const routes = require('./routes');
+const { ApolloServer } =require('apollo-server-express');
+
+const typeDefs = require('./schemas/typeDefs');
+const resolvers = require('./schemas/resolvers');
+const { ApolloServer } = require('apollo-server-express');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 
 // if we're in production, serve client/build as static assets
 if (process.env.NODE_ENV === 'production') {
