@@ -16,8 +16,31 @@ const resolvers = {
         }
     },
     Mutation: {
-        
-    }
+        addUser: async (parent, args) => {
+            const user = await User.create(args);
+            const token = signToken(user);
+
+            return { token, user };
+        },
+        login: async (parent, {email, password }) => {
+            const user = await User.findOne({ email });
+            if(!user) {
+                throw new AuthenticationError('Login information is incorrect')
+            }
+            const correctPw = await user.CorrectPassword
+            (password);
+            if(!correctPw) {
+                throw new AuthenticationError('Login information is incorrect.')
+            }
+            const token = signToken(user);
+            return { token, user };
+        },
+        saveBook: async (parent, { book }, conext) => {
+            if (conext.user) {
+                
+            }
+        }
+        }
 }
 
 module.exports = resolvers;
