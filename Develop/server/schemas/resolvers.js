@@ -37,10 +37,26 @@ const resolvers = {
         },
         saveBook: async (parent, { book }, conext) => {
             if (conext.user) {
-                
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: contxt.user._id },
+                    { $addToSet: {savedBooks: book } },
+                    { new: true }
+                )
+                return updatedUser;
+            }
+            throw new AuthenticationError('You are not logged in.')
+        },
+        removeBook: async (parent, { bookId }, conext) => {
+            if (context.user) {
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: conext.user._id } ,
+                    { $pull: { savedBooks: { bookId: bookId } }},
+                    { new: true },
+                )
+                return updatedUser;
             }
         }
-        }
-}
+    }
+};
 
 module.exports = resolvers;
